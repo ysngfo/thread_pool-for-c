@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include"thread_pool.h"
-#define THREAD_POOL_SIZE 4
 
-// ³õÊ¼»¯Ïß³Ì³Ø
+// åˆå§‹åŒ–çº¿ç¨‹æ± 
 void initialize_pool(ThreadPool *pool, int size) {
     pool->task_queue = (Task *)malloc(sizeof(Task) * size);
     pool->queue_size = size;
@@ -14,7 +13,7 @@ void initialize_pool(ThreadPool *pool, int size) {
     pthread_cond_init(&pool->not_full, NULL);
 }
 
-// ½«ÈÎÎñ¼ÓÈë¶ÓÁĞ
+// å°†ä»»åŠ¡åŠ å…¥é˜Ÿåˆ—
 void enqueue_task(ThreadPool *pool, Task task) {
     pthread_mutex_lock(&pool->lock);
     while (pool->count == pool->queue_size) {
@@ -29,7 +28,7 @@ void enqueue_task(ThreadPool *pool, Task task) {
     pthread_mutex_unlock(&pool->lock);
 }
 
-// ´Ó¶ÓÁĞÖĞÈ¡³öÈÎÎñ
+// ä»é˜Ÿåˆ—ä¸­å–å‡ºä»»åŠ¡
 Task dequeue_task(ThreadPool *pool) {
     Task task;
     pthread_mutex_lock(&pool->lock);
@@ -47,7 +46,7 @@ Task dequeue_task(ThreadPool *pool) {
     return task;
 }
 
-// Ïß³Ì¹¤×÷º¯Êı£¬ÓÃÓÚÖ´ĞĞÈÎÎñ¶ÓÁĞÖĞµÄÈÎÎñ
+// çº¿ç¨‹å·¥ä½œå‡½æ•°ï¼Œç”¨äºæ‰§è¡Œä»»åŠ¡é˜Ÿåˆ—ä¸­çš„ä»»åŠ¡
 void *worker_thread(void *arg) {
     ThreadPool *pool = (ThreadPool *)arg;
     while (1) {
@@ -57,7 +56,7 @@ void *worker_thread(void *arg) {
     return NULL;
 }
 
-// ´´½¨Ïß³Ì³Ø²¢Æô¶¯Ïß³Ì
+// åˆ›å»ºçº¿ç¨‹æ± å¹¶å¯åŠ¨çº¿ç¨‹
 void create_thread_pool(ThreadPool *pool, int num_threads) {
     for (int i = 0; i < num_threads; i++) {
         pthread_t thread;
@@ -66,13 +65,13 @@ void create_thread_pool(ThreadPool *pool, int num_threads) {
     }
 }
 
-// Ìá½»ÈÎÎñµ½Ïß³Ì³Ø
+// æäº¤ä»»åŠ¡åˆ°çº¿ç¨‹æ± 
 void submit_task(ThreadPool *pool, void (*function)(void *), void *data) {
     Task task = {function, data};
     enqueue_task(pool, task);
 }
 
-// ÇåÀíÏß³Ì³Ø×ÊÔ´
+// æ¸…ç†çº¿ç¨‹æ± èµ„æº
 void cleanup_pool(ThreadPool *pool) {
     free(pool->task_queue);
     pthread_mutex_destroy(&pool->lock);
@@ -80,7 +79,7 @@ void cleanup_pool(ThreadPool *pool) {
     pthread_cond_destroy(&pool->not_full);
 }
 
-// Ê¾ÀıÈÎÎñº¯Êı
+// ç¤ºä¾‹ä»»åŠ¡å‡½æ•°
 void my_task_function(void *data) {
     int *number = (int *)data;
     printf("Processing number: %d\n", *number);
