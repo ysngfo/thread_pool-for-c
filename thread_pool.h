@@ -1,19 +1,20 @@
 #ifndef C2828BFE_A40D_4F42_8B17_62DE88EBD3CE
 #define C2828BFE_A40D_4F42_8B17_62DE88EBD3CE
+#define THREAD_POOL_SIZE 4
 typedef struct {
-    void (*function)(void *); // ÈÎÎñµÄº¯ÊıÖ¸Õë
-    void *data; // ÈÎÎñµÄ²ÎÊı
+    void (*function)(void *); // ä»»åŠ¡çš„å‡½æ•°æŒ‡é’ˆ
+    void *data; // ä»»åŠ¡çš„å‚æ•°
 } Task;
 
-// Ïß³Ì³Ø½á¹¹Ìå£¬°üº¬ÈÎÎñ¶ÓÁĞºÍÏà¹ØÍ¬²½ÔªËØ
+// çº¿ç¨‹æ± ç»“æ„ä½“ï¼ŒåŒ…å«ä»»åŠ¡é˜Ÿåˆ—å’Œç›¸å…³åŒæ­¥å…ƒç´ 
 typedef struct {
-    Task *task_queue; // ÈÎÎñ¶ÓÁĞ
-    int queue_size; // ¶ÓÁĞ´óĞ¡
-    int front, rear; // ¶ÓÁĞÇ°ºóË÷Òı
-    int count; // ¶ÓÁĞÖĞµÄÈÎÎñÊı
-    pthread_mutex_t lock; // »¥³âËø£¬ÓÃÓÚÍ¬²½·ÃÎÊÈÎÎñ¶ÓÁĞ
-    pthread_cond_t not_empty; // Ìõ¼ş±äÁ¿£¬ÓÃÓÚÍ¨Öª¶ÓÁĞ·Ç¿Õ
-    pthread_cond_t not_full; // Ìõ¼ş±äÁ¿£¬ÓÃÓÚÍ¨Öª¶ÓÁĞ·ÇÂú
+    Task *task_queue; // ä»»åŠ¡é˜Ÿåˆ—
+    int queue_size; // é˜Ÿåˆ—å¤§å°
+    int front, rear; // é˜Ÿåˆ—å‰åç´¢å¼•
+    int count; // é˜Ÿåˆ—ä¸­çš„ä»»åŠ¡æ•°
+    pthread_mutex_t lock; // äº’æ–¥é”ï¼Œç”¨äºåŒæ­¥è®¿é—®ä»»åŠ¡é˜Ÿåˆ—
+    pthread_cond_t not_empty; // æ¡ä»¶å˜é‡ï¼Œç”¨äºé€šçŸ¥é˜Ÿåˆ—éç©º
+    pthread_cond_t not_full; // æ¡ä»¶å˜é‡ï¼Œç”¨äºé€šçŸ¥é˜Ÿåˆ—éæ»¡
 } ThreadPool;
 
 void initialize_pool(ThreadPool *pool, int size);
